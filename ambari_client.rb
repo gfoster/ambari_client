@@ -6,12 +6,24 @@ class AmbariCluster
   private
 
   def change_service_state(cluster:, service:, state:)
-    body = { }.to_json # some magic goes here
+    body = {
+      "RequestInfo" => {
+        "operation_level" => {
+          "level" => "SERVICE",
+          "cluster_name" => cluster
+        },
+        "context" => "Service #{service} transition to #{state.downcase}"
+      },
+      "ServiceInfo" => {
+        "state" => state
+      }
+    }.to_json
 
     headers = { "X-Requested-By" => "#{@user}" }
 
     uri = service(cluster: cluster, service: service)["href"]
-    res = RestClient.put(uri, body, headers)
+
+    res = RestClient::Request.new(:method => :put, :url => uri, :user => @user, :password => @password, :headers => headers, :payload => body).execute
     return res
   end
 
@@ -22,7 +34,8 @@ class AmbariCluster
           "level" => "HOST_COMPONENT",
           "cluster_name" => cluster,
           "host_names" => host
-        }
+        },
+        "context" => "Component #{component} transition to #{state.downcase}"
       },
       "HostRoles" => {
         "state" => state
@@ -34,6 +47,7 @@ class AmbariCluster
     uri = host_component(cluster: cluster, host: host, component: component)["href"]
 
     res = RestClient::Request.new(:method => :put, :url => uri, :user => @user, :password => @password, :headers => headers, :payload => body).execute
+    return res
   end
 
   public
@@ -52,7 +66,7 @@ class AmbariCluster
   def clusters
     # Fetch a list of clusters this ambari server manages
     # returns an array
-    res = JSON(RestClient.get(@uri + "clusters/"))['items']
+    res = JSON(RestClient.get(@uri + "clusters/"))
     clusters = res['items'].collect { |item| item["Clusters"]["cluster_name"] }
     return clusters
   end
