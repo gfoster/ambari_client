@@ -152,18 +152,38 @@ class AmbariCluster
     return res
   end
 
+  def add_service(cluster:, service:)
+  end
+
   def remove_service(cluster:, service:)
     headers = { "X-Requested-By" => "#{@user}" }
 
-    uri = service(cluster: cluster, service: service)
+    uri = service(cluster: cluster, service: service)['href']
 
-    res = RestClient.delete(@uri, headers)
+    RestClient::Request.new(:method => :delete, :url => uri, :user => @user, :password => @password, :headers => headers).execute
   end
 
-  def remove_component(cluster, host:, component:)
-    headers = { "X-Requested-By" => "#{@user}" }
-    uri = host_component(cluster: cluster, host: host, component: component)
+  def add_component(cluster:, host:, component:)
+    # a new component is installed by first doing a POST to the endpoint to place it in install_pending
+    # and then following it with a state change to INSTALLED (which just so happens is what the stop method does)
+    res = RestClient.post(@uri + "#{cluster}/hosts/#{host}/#{component}")
+    res = stop_component(cluster: cluster, host: host, component: component)
+  end
 
-    res = RestClient.delete(@uri, headers)
+  def remove_component(cluster:, host:, component:)
+    headers = { "X-Requested-By" => "#{@user}" }
+    uri = host_component(cluster: cluster, host: host, component: component)['href']
+
+    RestClient::Request.new(:method => :delete, :url => uri, :user => @user, :password => @password, :headers => headers).execute
+  end
+
+  def add_host(cluster:, host:)
+  end
+
+  def remove_host(cluster:, host:)
+    headers = { "X-Requested-By" => "#{@user}" }
+    uri = host(cluster: cluster, host: host)['href']
+
+    RestClient::Request.new(:method => :delete, :url => uri, :user => @user, :password => @password, :headers => headers).execute
   end
 end
