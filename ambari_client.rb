@@ -36,7 +36,7 @@ class AmbariCluster
     # This is janky as hell, fix it
     uri.insert(uri.index("://") + 3, "#{@user}:#{@password}@")
 
-    res = RestClient.put(uri, body, headers)
+    res = RestClient::Request.new(:method => :put, :url => uri, :user => @user, :password => @password, :headers => headers, :payload => body).execute
   end
 
   public
