@@ -33,9 +33,6 @@ class AmbariCluster
 
     uri = host_component(cluster: cluster, host: host, component: component)["href"]
 
-    # This is janky as hell, fix it
-    uri.insert(uri.index("://") + 3, "#{@user}:#{@password}@")
-
     res = RestClient::Request.new(:method => :put, :url => uri, :user => @user, :password => @password, :headers => headers, :payload => body).execute
   end
 
