@@ -166,7 +166,10 @@ class AmbariCluster
   def add_component(cluster:, host:, component:)
     # a new component is installed by first doing a POST to the endpoint to place it in install_pending
     # and then following it with a state change to INSTALLED (which just so happens is what the stop method does)
-    res = RestClient.post(@uri + "#{cluster}/hosts/#{host}/#{component}")
+    headers = { "X-Requested-By" => "#{@user}" }
+    uri = host(cluster: cluster, host: host)['href'] + "host_components/#{component}"
+
+    RestClient::Request.new(:method => :post, :url => uri, :user => @user, :password => @password, :headers => headers).execute
     res = stop_component(cluster: cluster, host: host, component: component)
   end
 
