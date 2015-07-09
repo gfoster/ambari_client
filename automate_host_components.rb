@@ -3,10 +3,10 @@ load 'ambari_client.rb'
 class Host
   attr_accessor :hostname, :conn, :cluster, :components
 
-  def initialize(hostname)
+  def initialize(hostname, cluster)
     @hostname = hostname
     @conn = AmbariCluster.new(host: "ambari.smoke.vpc.rgops.com", port: 8080, user: "admin", password: "admin")
-    @cluster = "Smoke"
+    @cluster = cluster
     @components = @conn.host_components(cluster: @cluster, host: @hostname)
   end
 
@@ -35,7 +35,7 @@ class Host
 
 end
 
-h = Host.new("data01-smoke-hdp.ulive.sh")
+h = Host.new("data01-smoke-hdp.ulive.sh", "Smoke")
 h.stop_components()
 
 
