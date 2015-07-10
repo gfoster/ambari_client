@@ -181,6 +181,8 @@ class AmbariCluster
   end
 
   def add_host(cluster:, host:)
+    uri = host(cluster: cluster, host: host)['href']
+    RestClient::Request.new(:method => :put, :url => uri, :user => @user, :password => @password).execute
   end
 
   def remove_host(cluster:, host:)
