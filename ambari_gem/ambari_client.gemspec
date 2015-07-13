@@ -6,8 +6,8 @@ require 'ambari_client/version'
 Gem::Specification.new do |spec|
   spec.name          = "ambari_client"
   spec.version       = AmbariClient::VERSION
-  spec.authors       = ["Blythe Sheldon"]
-  spec.email         = ["bsheldon@ulive.com"]
+  spec.authors       = ["Gary Foster", "Blythe Sheldon"]
+  spec.email         = ["gfoster@ulive.com", "bsheldon@ulive.com"]
 
   spec.summary       = "Simple client to access Ambari resources."
   spec.description   = "Simple client to create, remove, and modify Ambari hosts, their components and services."
