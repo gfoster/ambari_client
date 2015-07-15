@@ -1,0 +1,21 @@
+---
+- cluster: "Smoke"
+  ambari_server: "ambari.smoke.vpc.rgops.com"
+  datanode:
+    - NODEMANAGER
+    - HBASE_CLIENT
+    - HCAT_CLIENT
+    - HDFS_CLIENT
+    - TEZ_CLIENT
+    - METRICS_MONITOR
+    - MAPREDUCE2_CLIENT
+    - SLIDER
+    - SQOOP
+    - YARN_CLIENT
+
+
+
+
+
+
+    

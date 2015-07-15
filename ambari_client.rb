@@ -181,6 +181,15 @@ class AmbariCluster
   end
 
   def add_host(cluster:, host:)
+    headers = { "X-Requested-By" => "#{@user}"}
+    uri = hosts(cluster: cluster)
+    hosts = uri['items']
+    hosts.each do |h|
+      next if h['Hosts']["host_name"].include?(host)
+        url = h['href']
+        RestClient::Request.new(:method => :post, :url => url, :user => @user, :password => @password, :headers => headers).execute
+      end
+    end
   end
 
   def remove_host(cluster:, host:)
